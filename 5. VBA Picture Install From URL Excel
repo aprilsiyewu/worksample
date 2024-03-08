@@ -1,0 +1,30 @@
+Sub URLPictureInsert()
+    Dim theShape As Shape
+    Dim xRg As Range
+    Dim xCol As Long
+    On Error Resume Next
+    Application.ScreenUpdating = False
+    Set rng = ActiveSheet.Range("B1:B3000")
+    For Each cell In rng
+        Filename = cell
+        If InStr(UCase(Filename), "JPG") > 0 Then
+            ActiveSheet.Pictures.Insert(Filename).Select
+            Set theShape = Selection.ShapeRange.Item(1)
+            If theShape Is Nothing Then GoTo isnill
+            xCol = cell.Column + 1
+            Set xRg = Cells(cell.Row, xCol)
+            With theShape
+                .LockAspectRatio = msoFalse
+                .Width = 70
+                .Height = 100
+                .Top = xRg.Top + (xRg.Height - .Height) / 2
+                .Left = xRg.Left + (xRg.Width - .Width) / 2
+            End With
+isnill:
+            Set theShape = Nothing
+            Range("B2").Select
+        End If
+    Next
+    Application.ScreenUpdating = True
+    Debug.Print "Done " & Now
+End Sub
